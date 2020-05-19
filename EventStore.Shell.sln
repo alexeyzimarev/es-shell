@@ -1,0 +1,16 @@
+﻿
+Microsoft Visual Studio Solution File, Format Version 12.00
+Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "EventStore.Shell", "src\EventStore.Shell\EventStore.Shell.csproj", "{5528FBFF-8788-4177-B345-D40A12F8F2AE}"
+EndProject
+Global
+	GlobalSection(SolutionConfigurationPlatforms) = preSolution
+		Debug|Any CPU = Debug|Any CPU
+		Release|Any CPU = Release|Any CPU
+	EndGlobalSection
+	GlobalSection(ProjectConfigurationPlatforms) = postSolution
+		{5528FBFF-8788-4177-B345-D40A12F8F2AE}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
+		{5528FBFF-8788-4177-B345-D40A12F8F2AE}.Debug|Any CPU.Build.0 = Debug|Any CPU
+		{5528FBFF-8788-4177-B345-D40A12F8F2AE}.Release|Any CPU.ActiveCfg = Release|Any CPU
+		{5528FBFF-8788-4177-B345-D40A12F8F2AE}.Release|Any CPU.Build.0 = Release|Any CPU
+	EndGlobalSection
+EndGlobal
