@@ -18,6 +18,7 @@ namespace EventStore.Shell
             while (result != 255)
             {
                 var input = ReadLine.ReadLine.Read("> ");
+                if (input.StartsWith("help")) input = "--" + input;
                 result = await command.InvokeAsync(input);
             }
             

@@ -12,14 +12,6 @@ namespace EventStore.Shell.Commands
 
         public char[] Separators { get; set; } = { ' ', '.', '/', '\\', ':' };
         
-        public string[] GetSuggestions(string text, int index)
-        {
-            if (index == 0)
-            {
-                return _rootCommand.Children.Select(x => x.Name).Where(x => x.StartsWith(text)).ToArray();
-            }
-
-            return null;
-        }
+        public string[] GetSuggestions(string text, int index) => _rootCommand.GetSuggestions(text).ToArray();
     }
 }
