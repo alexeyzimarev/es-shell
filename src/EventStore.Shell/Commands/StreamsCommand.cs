@@ -1,29 +1,43 @@
 using System.CommandLine;
 using System.CommandLine.Invocation;
 using System.Threading.Tasks;
+using EventStore.ClientAPI;
+using EventStore.Shell.EventStore;
 
 namespace EventStore.Shell.Commands
 {
     public class StreamsCommand : Command
     {
-        const string Streams = "$streams";
-        
         public StreamsCommand() : base("streams", "List all streams (except system streams)")
         {
-            Handler = CommandHandler.Create(Handle);
+            var more = new Command("more", "Retrieve the next page of streams")
+            {
+                Handler = CommandHandler.Create(() => Handle(-1))
+            };
+            
+            Handler = CommandHandler.Create(() => Handle(0));
+            AddCommand(more);
         }
 
-        async Task Handle()
+        async Task Handle(long start)
         {
-            var connection = ConnectionManager.GetCurrentConnection();
-            if (connection == null) return;
-            
-            var slice = await connection.ReadStreamEventsForwardAsync(Streams, 0, 10, true);
+            var ctx = SessionContext.Current.Connection;
+            if (!await ctx.EnsureConnectedAndLog()) return;
 
-            foreach (var evt in slice.Events)
+            await ctx.SetStream("$streams");
+            var (events, isEndOfStream) = await ctx.CurrentStream.ReadForward(start);
+            LogStreams(events, isEndOfStream);
+        }
+
+        static void LogStreams(ResolvedEvent[] events, bool isEndOfStream)
+        {
+            foreach (var evt in events)
             {
                 Output.Write(evt.Event.EventStreamId);
             }
+            
+            if (isEndOfStream)
+                Output.WriteWarning("No more streams to fetch");
         }
     }
 }

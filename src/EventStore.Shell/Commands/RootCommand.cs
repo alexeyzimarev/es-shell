@@ -9,7 +9,7 @@ namespace EventStore.Shell.Commands
     {
         public Root()
         {
-            Name = ":";
+            Name = "es-shell";
             Handler = CommandHandler.Create(() => Console.Out.WriteLineAsync("Root called"));
             
             AddCommand(new Command("exit") {Handler = CommandHandler.Create(() => Task.FromResult(255))});

@@ -12,31 +12,26 @@ namespace EventStore.Shell
             }
         }
 
+        public static void WriteColoured(string[] output, ConsoleColor colour)
+        {
+            var previous = Console.ForegroundColor;
+            Console.ForegroundColor = colour;
+            Write(output);
+            Console.ForegroundColor = previous;
+        }
+
         public static void WriteValue(string key, object value)
         {
             if (value != null)
                 Console.WriteLine($"{key}: {value}");
         }
 
-        public static void WriteInfo(params string[] output)
-        {
-            Console.ForegroundColor = ConsoleColor.Green;
-            Write(output);
-            Console.ResetColor();
-        }
+        public static void WriteInfo(params string[] output) => WriteColoured(output, ConsoleColor.Green);
+
+        public static void WriteError(params string[] output) => WriteColoured(output, ConsoleColor.Red);
+
+        public static void WriteWarning(params string[] output) => WriteColoured(output, ConsoleColor.Yellow);
         
-        public static void WriteError(params string[] output)
-        {
-            Console.ForegroundColor = ConsoleColor.Red;
-            Write(output);
-            Console.ResetColor();
-        }
-        
-        public static void WriteWarning(params string[] output)
-        {
-            Console.ForegroundColor = ConsoleColor.Yellow;
-            Write(output);
-            Console.ResetColor();
-        }
+        public static void WritePrompt(params string[] output) => WriteColoured(output, ConsoleColor.DarkBlue);
     }
 }

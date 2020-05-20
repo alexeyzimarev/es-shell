@@ -28,9 +28,9 @@ namespace EventStore.Shell.Commands
 
         static async Task HandleReadMeta(string name)
         {
-            if (name != null) await Stream.SetCurrent(name);
+            if (name != null) await SetCurrentStream(name);
 
-            var meta = await Stream.Current.ReadMeta();
+            var meta = await CurrentStream.ReadMeta();
 
             meta.MatchSome(
                 x =>
@@ -50,9 +50,9 @@ namespace EventStore.Shell.Commands
 
         static async Task HandleReadStream(string name, long start, int count)
         {
-            if (name != null) await Stream.SetCurrent(name);
+            if (name != null) await SetCurrentStream(name);
 
-            var events = await Stream.Current.ReadForward(start, count);
+            var (events, isEndOfStream) = await CurrentStream.ReadForward(start, count, x => Output.WriteInfo(x));
 
             if (events.Length == 0)
             {
@@ -60,21 +60,31 @@ namespace EventStore.Shell.Commands
                 return;
             }
 
+            Separate();
             foreach (var evt in events)
             {
-                Output.WriteValue("Type     ", evt.Event.EventType);
-                Output.WriteValue("Id       ", evt.Event.EventId);
                 Output.WriteValue("Sequence ", evt.Event.EventNumber);
+                Output.WriteValue("Id       ", evt.Event.EventId);
+                Output.WriteValue("Type     ", evt.Event.EventType);
                 Output.WriteValue("Timestamp", evt.Event.Created);
-                Output.Write("---------");
+                Separate();
             }
+            
+            if (isEndOfStream)
+                Output.WriteWarning("End of the stream");
 
             string Deserialize(byte[] data)
             {
                 return "";
             }
+            
+            void Separate() => Output.Write("---------");
         }
 
-        static Task HandleSetStream(string name) => Stream.SetCurrent(name);
+        static Task HandleSetStream(string name) => SetCurrentStream(name);
+
+        static StreamContext CurrentStream => SessionContext.Current.Connection.CurrentStream;
+
+        static Task SetCurrentStream(string name) => SessionContext.Current.Connection.SetStream(name);
     }
 }

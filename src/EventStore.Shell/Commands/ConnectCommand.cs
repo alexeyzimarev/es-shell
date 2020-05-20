@@ -1,7 +1,7 @@
-using System;
 using System.CommandLine;
 using System.CommandLine.Invocation;
 using System.Threading.Tasks;
+using EventStore.Shell.EventStore;
 
 namespace EventStore.Shell.Commands
 {
@@ -17,7 +17,7 @@ namespace EventStore.Shell.Commands
 
         static async Task<int> Handle(string host, string user, string password)
         {
-            await ConnectionManager.Instance.Connect(host, user, password);
+            await SessionContext.Current.Connect(host, user, password);
             return 0;
         }
     }
