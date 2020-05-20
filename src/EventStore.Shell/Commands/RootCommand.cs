@@ -2,6 +2,7 @@ using System;
 using System.CommandLine;
 using System.CommandLine.Invocation;
 using System.Threading.Tasks;
+using EventStore.Shell.Commands.Stream;
 
 namespace EventStore.Shell.Commands
 {

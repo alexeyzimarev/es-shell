@@ -20,7 +20,7 @@ namespace EventStore.Shell.EventStore
         {
             if (_connection == null)
             {
-                Output.WriteError("Not connected to Event Store, use the connect command");
+                Output.WriteError("Not connected to Event Store, use the 'connect' command");
                 return null;
             }
 

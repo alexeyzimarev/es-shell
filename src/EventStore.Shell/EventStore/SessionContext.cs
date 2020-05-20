@@ -30,5 +30,32 @@ namespace EventStore.Shell.EventStore
             : Connection?.ConnectedTo;
 
         public void Dispose() => Disconnect();
+
+        public static bool TryGetConnectionContext(out ConnectionContext context)
+        {
+            if (Current.Connection == null)
+                Output.WriteError("Not connected to Event Store, use the 'connect' command");
+            
+            context = Current.Connection;
+            return context != null;
+        }
+
+        public static bool TryGetCurrentStream(out StreamContext context)
+        {
+            if (Current.Connection.CurrentStream == null)
+                Output.WriteError("Stream context not set, either use the '--name' option or the 'stream set' command");
+            
+            context = Current.Connection.CurrentStream;
+            return context != null;
+        }
+
+        public static async Task<StreamContext> TrySetAndGetCurrentStream(string streamName)
+        {
+            if (!TryGetConnectionContext(out var connection)) return null;
+            
+            if (streamName != null) await connection.SetStream(streamName);
+
+            return TryGetCurrentStream(out var stream) ? stream : null;
+        }
     }
 }
